@@ -33,6 +33,7 @@ export function Screen({
   children,
   action,
   scroll = true,
+  scrollEnabled = true,
   contentStyle,
 }: {
   title: string;
@@ -42,6 +43,8 @@ export function Screen({
   children: ReactNode;
   action?: ReactNode;
   scroll?: boolean;
+  /** Bloque le défilement le temps d'un geste (signature) : sinon Android vole le trait. */
+  scrollEnabled?: boolean;
   contentStyle?: ViewStyle;
 }) {
   const insets = useSafeAreaInsets();
@@ -70,6 +73,7 @@ export function Screen({
         style={s.view}
         contentContainerStyle={scroll ? [s.content, { paddingBottom: action ? 150 + insets.bottom : 32 + insets.bottom }, contentStyle] : undefined}
         keyboardShouldPersistTaps="handled"
+        {...(scroll ? { scrollEnabled } : null)}
       >
         {scroll ? children : <View style={[s.content, { flex: 1 }, contentStyle]}>{children}</View>}
       </Body>

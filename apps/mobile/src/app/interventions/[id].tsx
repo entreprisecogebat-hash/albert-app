@@ -23,6 +23,7 @@ export default function InterventionScreen() {
   const x = fiche.data;
   const [signer, setSigner] = useState('');
   const [sig, setSig] = useState<{ strokes: Strokes; width: number; height: number } | null>(null);
+  const [drawing, setDrawing] = useState(false);
 
   const sign = useMutation({
     mutationFn: () => api.interventions.sign(id, { signerName: signer.trim(), strokes: sig!.strokes, width: sig!.width, height: sig!.height }),
@@ -43,7 +44,7 @@ export default function InterventionScreen() {
   };
 
   return (
-    <Screen back title={x ? x.number : 'Fiche d’intervention'} subtitle={x?.siteName}
+    <Screen back title={x ? x.number : 'Fiche d’intervention'} subtitle={x?.siteName} scrollEnabled={!drawing}
       action={signed ? (x?.documentId ? <Button label="Ouvrir le PDF signé" onPress={openPdf} /> : undefined)
         : canSign ? <Button label="Faire signer et enregistrer" onPress={() => sign.mutate()} busy={sign.isPending} disabled={!online || !signer.trim() || !hasInk} /> : undefined}>
       {!online ? <NetBanner text="Hors ligne. La signature sera possible dès que vous captez." /> : null}
@@ -90,7 +91,7 @@ export default function InterventionScreen() {
                 <Label>Nom du signataire</Label>
                 <Field value={signer} onChangeText={setSigner} placeholder="Ex. Claire Lefèvre" autoCapitalize="words" accessibilityLabel="Nom du signataire" />
               </View>
-              <SignaturePad onChange={(strokes, size) => setSig({ strokes: strokes.map((st) => [...st]), ...size })} />
+              <SignaturePad onDrawing={setDrawing} onChange={(strokes, size) => setSig({ strokes, ...size })} />
               <ErrorText text={sign.error ? (sign.error as Error).message : null} />
             </View>
           ) : (

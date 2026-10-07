@@ -35,6 +35,10 @@ export default function TabsLayout() {
           paddingBottom: Platform.OS === 'web' ? 10 : Math.max(insets.bottom, 10),
         },
         sceneStyle: { backgroundColor: colors.bg },
+        // Le bouton par défaut pose sur Android un ripple sans bord, gris foncé, qui déborde en gros cercle noir.
+        tabBarButton: ({ ref: _ref, href: _href, android_ripple: _ripple, pressOpacity: _opacity, hoverEffect: _hover, style, ...props }) => (
+          <Pressable {...props} style={({ pressed }) => [style, pressed && { opacity: 0.6 }]} />
+        ),
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Accueil', tabBarIcon: ic(LayoutDashboard) }} />
