@@ -3,7 +3,7 @@ import { Building2, CalendarDays, LayoutDashboard, Plus, Users } from 'lucide-re
 import { Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../lib/auth';
-import { colors, floating, font } from '../../ui/theme';
+import { colors, font } from '../../ui/theme';
 
 /**
  * Quatre onglets et, au centre, le bouton jaune « Ajouter » : photo, pointage, tâche, message…
@@ -53,8 +53,8 @@ export default function TabsLayout() {
             <Pressable accessibilityRole="button" accessibilityLabel="Ajouter : photo, pointage, tâche, message" onPress={() => router.push('/ajouter')}
               style={({ pressed }) => [{ flex: 1, alignItems: 'center', justifyContent: 'center' }, pressed && { transform: [{ scale: 0.94 }] }]}>
               {/* Plus gros que les onglets et à moitié hors de la barre : c'est l'action principale de l'app. */}
-              <View style={[{ width: 66, height: 66, borderRadius: 33, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center',
-                marginTop: -36, borderWidth: 4, borderColor: colors.paper }, floating]}>
+              <View style={{ width: 66, height: 66, borderRadius: 33, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center',
+                marginTop: -36, borderWidth: 4, borderColor: colors.paper }}>
                 <Plus size={32} strokeWidth={2.5} color={colors.ink} />
               </View>
             </Pressable>
