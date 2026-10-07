@@ -30,7 +30,7 @@
         "ACCESS_COARSE_LOCATION",
         "RECORD_AUDIO"
       ],
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
