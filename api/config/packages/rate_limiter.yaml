@@ -1,0 +1,23 @@
+framework:
+    rate_limiter:
+        sms_code:
+            policy: sliding_window
+            limit: 5
+            interval: '15 minutes'
+
+when@dev:
+    framework:
+        rate_limiter:
+            sms_code:
+                policy: sliding_window
+                limit: 200
+                interval: '15 minutes'
+
+# Les tests d API se connectent souvent avec les memes numeros
+when@test:
+    framework:
+        rate_limiter:
+            sms_code:
+                policy: sliding_window
+                limit: 10000
+                interval: '15 minutes'

@@ -1,0 +1,17 @@
+{
+  "name": "@albert/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Code écrit une fois pour les trois interfaces : design system, appels à l'API, logique métier.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  }
+}

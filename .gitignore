@@ -1,0 +1,17 @@
+node_modules/
+.expo/
+dist/
+*.log
+.DS_Store
+/apps/mobile/ios/
+/apps/mobile/android/
+
+# Secrets et fichiers locaux
+.env*.local
+api/.env.local
+api/.env.test.local
+# Stockage des fichiers deposes (hors depot)
+api/private-media/
+api/var/
+api/vendor/
+.claude/

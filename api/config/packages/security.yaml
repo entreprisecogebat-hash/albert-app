@@ -1,0 +1,33 @@
+security:
+    providers:
+        app_users:
+            entity:
+                class: App\Entity\User
+                property: phone
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt)/
+            security: false
+        auth:
+            # Demande et verification du code SMS : public
+            pattern: ^/api/auth/(request-code|verify)$
+            security: false
+        share:
+            # Liens de partage externe (F-06) : le jeton du lien fait office de secret
+            pattern: ^/s/
+            security: false
+        files:
+            # Fichiers servis par URL signee a duree limitee (verifiee dans le controleur)
+            pattern: ^/files/
+            security: false
+        api:
+            pattern: ^/api/
+            stateless: true
+            provider: app_users
+            access_token:
+                token_handler: App\Security\ApiTokenHandler
+
+    access_control:
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/, roles: ROLE_USER }

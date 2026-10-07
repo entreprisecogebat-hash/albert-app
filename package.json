@@ -1,0 +1,21 @@
+{
+  "name": "albert",
+  "private": true,
+  "description": "Albert, le carnet de chantier de vos équipes. Monorepo : API Symfony, application mobile React Native, back-office React.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "api": "cd api && php -S 0.0.0.0:8000 -t public public/index.php",
+    "backoffice": "npm run dev -w @albert/backoffice",
+    "mobile": "npm run start -w @albert/mobile",
+    "test": "npm run test -w @albert/shared",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "smoke": "bash scripts/smoke-api.sh"
+  },
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "_comment": "Cas partagés entre api/tests/Classification et packages/shared/src/__tests__. Toute évolution du classement doit passer ces cas des deux côtés.",
+  "cases": [
+    { "file": "Plan_calepinage_final_v3.pdf", "display": "Plan calepinage", "normalized": "plan calepinage", "version": [3, "V3"] },
+    { "file": "Plan de calepinage", "display": "Plan de calepinage", "normalized": "plan calepinage", "version": [null, null] },
+    { "file": "DEVIS_etancheite_Toitec.pdf", "display": "DEVIS etancheite Toitec", "normalized": "devis etancheite toitec", "version": [null, null] },
+    { "file": "Devis étanchéité Toitec", "display": "Devis étanchéité Toitec", "normalized": "devis etancheite toitec", "version": [null, null] },
+    { "file": "Plan_reseaux_RDC_indB.pdf", "display": "Plan reseaux RDC", "normalized": "plan reseaux rdc", "version": [2, "Ind. B"] },
+    { "file": "CR chantier n°12 - 2026-03-12.pdf", "display": "CR chantier n°12", "normalized": "cr chantier 12", "version": [null, null] },
+    { "file": "Facade_nord_rev2 (1).pdf", "display": "Facade nord", "normalized": "facade nord", "version": [2, "Rev. 2"] },
+    { "file": "Compte rendu de chantier n°12", "display": "Compte rendu de chantier n°12", "normalized": "compte rendu chantier 12", "version": [null, null] }
+  ]
+}

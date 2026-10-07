@@ -1,0 +1,26 @@
+# Services d'infrastructure pour le developpement, alignes sur la production Scaleway :
+# PostgreSQL 17 et Redis 7. Lancement : docker compose up -d
+# (Sur ce poste, PostgreSQL 17 est aussi installe en natif : inutile de lancer celui-ci en meme temps.)
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: albert
+      POSTGRES_USER: albert
+      POSTGRES_PASSWORD: albert
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "albert", "-U", "albert"]
+      interval: 5s
+      retries: 10
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  database_data:

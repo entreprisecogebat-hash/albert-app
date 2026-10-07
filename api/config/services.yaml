@@ -1,0 +1,21 @@
+parameters:
+    albert.storage_dir: '%env(resolve:STORAGE_DIR)%'
+    albert.signed_url_ttl: '%env(int:SIGNED_URL_TTL)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $storageDir: '%albert.storage_dir%'
+            int $signedUrlTtl: '%albert.signed_url_ttl%'
+            string $appSecret: '%kernel.secret%'
+            string $smsTransport: '%env(SMS_TRANSPORT)%'
+            string $expoPushUrl: '%env(EXPO_PUSH_URL)%'
+            string $appEnv: '%kernel.environment%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Kernel.php'

@@ -1,0 +1,196 @@
+/* ==========================================================================
+   Back-office Albert. Charte Albert V0.2 (Sooyoos) : memes tokens et composants
+   que l'application, adaptes au bureau. Un seul jaune par ecran : l'action principale.
+   Les tokens :root sont injectes depuis @albert/shared (cssVariables()).
+   ========================================================================== */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:600; letter-spacing:-.02em; margin:0}
+p{margin:0}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--ink); outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+/* ---------- Charpente ---------- */
+.shell{display:grid; grid-template-columns:248px 1fr; min-height:100vh}
+.side{
+  position:sticky; top:0; height:100vh; display:flex; flex-direction:column;
+  background:var(--paper); border-right:1px solid var(--rule); padding:var(--s5) var(--s4);
+}
+.wordmark{display:inline-flex; flex-direction:column; text-decoration:none}
+.wordmark .w{font-family:var(--display); font-weight:700; font-variation-settings:"wdth" 112; font-size:30px; line-height:1; letter-spacing:-.035em}
+.wordmark .bar{display:block; height:7px; background:var(--accent); margin-top:4px}
+.side .co{font-size:14px; color:var(--ink-3); margin-top:var(--s3)}
+.nav{display:flex; flex-direction:column; gap:2px; margin-top:var(--s6)}
+.nav a{
+  display:flex; align-items:center; gap:var(--s3); min-height:44px; padding:0 var(--s3);
+  border-radius:var(--r1); text-decoration:none; color:var(--ink-2); font-size:15px; font-weight:500;
+}
+.nav a svg{flex:0 0 20px; color:var(--ink-3)}
+.nav a:hover{background:var(--bg-2)}
+.nav a.active{background:var(--night); color:var(--night-ink)}
+.nav a.active svg{color:var(--night-ink)}
+.nav .grp{font-size:13px; color:var(--ink-3); padding:var(--s4) var(--s3) var(--s1)}
+.side .me{margin-top:auto; padding-top:var(--s4); border-top:1px solid var(--rule); font-size:14px}
+.side .me b{display:block; font-weight:600}
+.side .me span{color:var(--ink-3)}
+
+.main{min-width:0}
+.page{max-width:1180px; margin:0 auto; padding:var(--s6) var(--s6) var(--s8)}
+.pagehead{display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s5); margin-bottom:var(--s6); flex-wrap:wrap}
+.pagehead h1{font-size:30px; font-weight:700; line-height:1.15}
+.pagehead .sub{font-size:15px; color:var(--ink-3); margin-top:var(--s1)}
+.pagehead .actions{display:flex; gap:var(--s3); align-items:center}
+.crumb{font-size:14px; color:var(--ink-3); text-decoration:none; display:inline-flex; align-items:center; gap:4px; margin-bottom:var(--s2)}
+.crumb:hover{color:var(--ink)}
+
+/* ---------- Boutons ---------- */
+.btn{
+  font-size:16px; font-weight:600; letter-spacing:-.01em; min-height:48px; padding:0 var(--s5);
+  border-radius:var(--pill); border:1px solid transparent; display:inline-flex; align-items:center;
+  justify-content:center; gap:var(--s2); cursor:pointer; transition:transform .12s var(--ease), background .12s var(--ease);
+  text-decoration:none; white-space:nowrap;
+}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.5; cursor:default}
+.btn--primary{background:var(--accent); color:var(--ink)}
+.btn--night{background:var(--night); color:var(--night-ink)}
+.btn--ghost{background:var(--paper); color:var(--ink); border-color:var(--rule-2)}
+.btn--ghost:hover{border-color:var(--ink-3)}
+.btn--text{background:none; border:0; color:var(--ink-2); font-weight:500; text-decoration:underline; text-underline-offset:4px; padding:0 var(--s2); min-height:40px}
+.btn--danger{background:var(--paper); color:var(--alerte); border-color:var(--rule-2)}
+.btn--sm{min-height:40px; font-size:14px; padding:0 var(--s4)}
+.btn--block{width:100%; min-height:56px; font-size:17px}
+
+/* ---------- Champs ---------- */
+.label{display:block; font-size:14px; color:var(--ink-3); margin-bottom:var(--s2)}
+.field{
+  display:flex; align-items:center; gap:var(--s3); min-height:48px; padding:0 var(--s4);
+  background:var(--paper); border:1px solid var(--rule-2); border-radius:var(--r1); color:var(--ink-3);
+}
+.field:focus-within{border-color:var(--ink)}
+.field input,.field select{border:0; outline:0; font:inherit; font-size:16px; color:var(--ink); width:100%; background:none; min-height:46px}
+.field.error{border-color:var(--alerte)}
+.input,.select{
+  width:100%; min-height:48px; padding:0 var(--s4); font:inherit; font-size:16px; color:var(--ink);
+  background:var(--paper); border:1px solid var(--rule-2); border-radius:var(--r1); outline:0;
+}
+.input:focus,.select:focus{border-color:var(--ink)}
+.input.mono{font-family:var(--mono); font-size:15px}
+.err{color:var(--alerte); font-size:14px; margin-top:var(--s2)}
+.hint{font-size:14px; color:var(--ink-3); margin-top:var(--s2)}
+.form{display:grid; gap:var(--s4)}
+.form .row{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4)}
+.check{display:flex; align-items:center; gap:var(--s3); min-height:44px; font-size:15px; cursor:pointer}
+.check input{width:20px; height:20px; accent-color:var(--night)}
+
+/* ---------- Chips ---------- */
+.chips{display:flex; gap:var(--s2); flex-wrap:wrap}
+.chip-f{
+  font-size:15px; font-weight:500; min-height:40px; padding:0 var(--s4); display:inline-flex; align-items:center;
+  border-radius:var(--pill); border:1px solid var(--rule-2); background:var(--paper); color:var(--ink-2); cursor:pointer;
+}
+.chip-f[aria-pressed="true"]{background:var(--night); border-color:var(--night); color:var(--night-ink)}
+
+/* ---------- Surfaces ---------- */
+.card{background:var(--paper); border:1px solid var(--rule); border-radius:var(--r2); padding:var(--s5)}
+.card + .card{margin-top:var(--s4)}
+.card h2{font-size:20px; line-height:1.2}
+.card .cardhead{display:flex; align-items:center; justify-content:space-between; gap:var(--s4); margin-bottom:var(--s4)}
+.grid{display:grid; gap:var(--s4)}
+.grid > *{min-width:0}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.cols{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:var(--s5); align-items:start}
+.stack > * + *{margin-top:var(--s4)}
+
+.stat{background:var(--paper); border:1px solid var(--rule); border-radius:var(--r2); padding:var(--s4) var(--s5)}
+.stat .n{font-family:var(--display); font-size:34px; font-weight:700; letter-spacing:-.03em; line-height:1.1}
+.stat .t{font-size:14px; color:var(--ink-3); margin-top:var(--s1)}
+
+/* ---------- Tables ---------- */
+.tbl-wrap{background:var(--paper); border:1px solid var(--rule); border-radius:var(--r2); overflow:hidden}
+table{width:100%; border-collapse:collapse; font-size:15px}
+th,td{text-align:left; padding:var(--s3) var(--s4); border-bottom:1px solid var(--rule); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th{font-size:13px; font-weight:500; color:var(--ink-3); background:var(--paper)}
+tbody tr.link{cursor:pointer}
+tbody tr.link:hover td{background:var(--bg)}
+td .main-t{font-weight:600; color:var(--ink)}
+td .sub-t{font-size:14px; color:var(--ink-3)}
+.num{font-family:var(--mono); font-size:13px; color:var(--ink-2)}
+.empty{padding:var(--s7) var(--s5); text-align:center; color:var(--ink-3); font-size:15px}
+
+/* ---------- Pastilles et etiquettes (toujours avec un mot) ---------- */
+.dot{width:8px; height:8px; border-radius:50%; flex:0 0 8px; display:inline-block}
+.tag{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--ink-2);
+  border:1px solid var(--rule-2); border-radius:var(--pill); padding:2px 10px; white-space:nowrap}
+.tag--night{background:var(--night); border-color:var(--night); color:var(--night-ink); font-weight:600}
+.tag--off{background:var(--bg-2); color:var(--ink-3)}
+.tag--alerte{color:var(--alerte); border-color:var(--alerte)}
+
+/* ---------- Fil (meme vocabulaire que l'app) ---------- */
+.feed{background:var(--paper); border:1px solid var(--rule); border-radius:var(--r2); padding:0 var(--s4)}
+.item{display:flex; gap:var(--s4); padding:var(--s4) 0; border-bottom:1px solid var(--rule)}
+.item:last-child{border-bottom:0}
+.item .ic{flex:0 0 40px; height:40px; border-radius:var(--r1); background:var(--bg-2);
+  display:flex; align-items:center; justify-content:center; color:var(--ink-2)}
+.item .bd{flex:1; min-width:0}
+.item .meta{font-family:var(--mono); font-size:12px; color:var(--ink-3)}
+.item .ttl{font-size:16px; font-weight:600; margin-top:2px; line-height:1.35}
+.item .subl{font-size:14px; color:var(--ink-2); margin-top:2px}
+.item.client{border-left:3px solid var(--client); margin-left:calc(var(--s4) * -1); padding-left:13px}
+.thumbs{display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap}
+.thumbs img{width:64px; height:64px; object-fit:cover; border-radius:var(--r1); border:1px solid var(--rule-2); background:var(--bg-2)}
+
+/* ---------- Lignes de classement ---------- */
+.kv{background:var(--paper); border:1px solid var(--rule); border-radius:var(--r2); overflow:hidden}
+.kv > div{display:flex; align-items:center; justify-content:space-between; gap:var(--s4); min-height:52px; padding:var(--s2) var(--s4); border-bottom:1px solid var(--rule)}
+.kv > div:last-child{border-bottom:0}
+.kv > a{display:flex; align-items:center; justify-content:space-between; gap:var(--s4); min-height:52px; padding:var(--s2) var(--s4); border-bottom:1px solid var(--rule); color:inherit}
+.kv > a:last-child{border-bottom:0}
+.kv > a:hover{background:var(--bg)}
+.kv .k{font-size:14px; color:var(--ink-3)}
+.kv .v{font-size:15px; font-weight:500; text-align:right}
+
+/* ---------- Feuille modale ---------- */
+.overlay{position:fixed; inset:0; background:rgba(44,49,56,.38); display:flex; align-items:flex-start; justify-content:center; padding:10vh var(--s5) var(--s5); z-index:50; animation:fade .2s var(--ease)}
+.sheet{width:100%; max-width:560px; background:var(--paper); border-radius:var(--r3); box-shadow:var(--lift); padding:var(--s6); max-height:80vh; overflow:auto}
+.sheet h2{font-size:24px; font-weight:700; margin-bottom:var(--s5)}
+.sheet .foot{display:flex; justify-content:flex-end; gap:var(--s3); margin-top:var(--s6)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed; left:50%; bottom:var(--s6); transform:translateX(-50%); background:var(--night); color:var(--night-ink);
+  border-radius:var(--r2); padding:var(--s3) var(--s5); font-size:15px; z-index:60; box-shadow:var(--lift); animation:fade .2s var(--ease)}
+
+/* ---------- Connexion ---------- */
+.login{min-height:100vh; display:grid; grid-template-columns:1fr 1fr}
+.login .left{position:relative; background:var(--night); color:var(--night-ink); padding:var(--s8); display:flex; flex-direction:column; justify-content:space-between; overflow:hidden}
+.login .grid-bg{position:absolute; inset:0; pointer-events:none;
+  background-image:repeating-linear-gradient(to right, rgba(255,255,255,.07) 0 1px, transparent 1px 48px), repeating-linear-gradient(to bottom, rgba(255,255,255,.07) 0 1px, transparent 1px 48px)}
+.login .left > *{position:relative}
+.login .wordmark .w{font-size:64px}
+.login .wordmark .bar{height:14px; margin-top:6px}
+.login .welcome{font-family:var(--display); font-size:30px; font-weight:600; letter-spacing:-.02em; margin-top:var(--s6); line-height:1.2}
+.login .note-n{font-size:15px; color:var(--night-3); max-width:420px}
+.login .right{display:flex; align-items:center; justify-content:center; padding:var(--s8)}
+.login .box{width:100%; max-width:400px}
+.login .box h1{font-size:28px; font-weight:700}
+.login .box p.lead{font-size:16px; color:var(--ink-2); margin-top:var(--s2)}
+.otp{font-family:var(--mono); font-size:28px; letter-spacing:.4em; text-align:center}
+.devcode{font-family:var(--mono); font-size:13px; color:var(--ink-3); background:var(--bg-2); border:1px dashed var(--rule-2); border-radius:var(--r1); padding:var(--s2) var(--s3); margin-top:var(--s3)}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static; height:auto}
+  .cols,.g3,.g4{grid-template-columns:1fr}
+  .login{grid-template-columns:1fr}
+  .login .left{min-height:320px}
+}
