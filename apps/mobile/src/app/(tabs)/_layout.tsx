@@ -70,6 +70,12 @@ function AddButton() {
   // Hauteurs de départ des barres de l'onde, et deux cercles décalés d'une demi-période.
   const [bars] = useState(() => [0.45, 0.8, 1, 0.65, 0.4].map((v) => new Animated.Value(v)));
   const [rings] = useState(() => [new Animated.Value(0), new Animated.Value(0)]);
+  // Le bouton grossit pendant l'appui long : on voit tout de suite qu'on n'est plus sur le simple +.
+  const [grow] = useState(() => new Animated.Value(1));
+
+  useEffect(() => {
+    Animated.spring(grow, { toValue: holding ? 1.18 : 1, friction: 5, tension: 160, useNativeDriver: true }).start();
+  }, [holding, grow]);
 
   useEffect(() => {
     if (!holding) return;
@@ -97,7 +103,7 @@ function AddButton() {
       delayLongPress={300}
       onPressOut={() => setHolding(false)}
       style={({ pressed }) => [{ flex: 1, alignItems: 'center', justifyContent: 'center' }, pressed && !holding && { transform: [{ scale: 0.94 }] }]}>
-      <View style={{ width: 66, height: 66, marginTop: -36, alignItems: 'center', justifyContent: 'center' }}>
+      <Animated.View style={{ width: 66, height: 66, marginTop: -36, alignItems: 'center', justifyContent: 'center', transform: [{ scale: grow }] }}>
         {holding ? rings.map((r, i) => (
           <Animated.View key={i} style={{ position: 'absolute', width: 66, height: 66, borderRadius: 33, borderWidth: 3, borderColor: colors.accent, pointerEvents: 'none',
             opacity: r.interpolate({ inputRange: [0, 1], outputRange: [0.7, 0] }),
@@ -116,7 +122,7 @@ function AddButton() {
             <Plus size={32} strokeWidth={2.5} color={colors.ink} />
           )}
         </View>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }
