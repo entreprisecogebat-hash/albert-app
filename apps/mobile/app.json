@@ -55,6 +55,13 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4361319a-04b8-4c1e-8002-e593af0b6efa"
+      }
+    },
+    "owner": "tbsrgt"
   }
 }
