@@ -242,14 +242,16 @@ final class CommandParser
     /** Le chantier nomme dans la phrase (nom ou client), sinon celui ou l'on est pointe. */
     private function takeSite(array $sites, ?string $currentSiteId): ?array
     {
-        $n = self::norm($this->rest);
+        $words = explode(' ', self::norm($this->rest));
         $best = null;
         $bestLen = 0;
         foreach ($sites as $s) {
             foreach (array_filter([$s['name'], $s['clientName'] ?? null]) as $label) {
                 $l = self::norm($label);
-                if ($l !== '' && strlen($l) > $bestLen && preg_match('/\b'.preg_quote($l, '/').'\b/u', $n)) {
-                    $best = ['site' => $s, 'label' => $label];
+                $found = $l !== '' && strlen($l) > $bestLen ? self::findWords($words, explode(' ', $l)) : null;
+                if ($found !== null) {
+                    // On retire du texte ce qui a ete dit (« Villa Marseau »), pas le nom exact.
+                    $best = ['site' => $s, 'label' => $found];
                     $bestLen = strlen($l);
                 }
             }
@@ -371,12 +373,38 @@ final class CommandParser
         return ['action' => 'unknown', 'transcript' => $text, 'summary' => $hint, 'fields' => [], 'missing' => []];
     }
 
+    /**
+     * Cherche les mots d'un nom dans la phrase, en tolerant les fautes de transcription
+     * (« Marseau » pour « Marceau ») : une lettre de difference par tranche de 5 lettres.
+     * Rend les mots tels qu'ils ont ete dits, ou null.
+     *
+     * @param list<string> $words
+     * @param list<string> $name
+     */
+    private static function findWords(array $words, array $name): ?string
+    {
+        $k = count($name);
+        for ($i = 0; $i + $k <= count($words); $i++) {
+            $ok = true;
+            for ($j = 0; $j < $k && $ok; $j++) {
+                $a = $words[$i + $j];
+                $b = $name[$j];
+                $ok = $a === $b || (strlen($b) >= 5 && levenshtein($a, $b) <= intdiv(strlen($b), 5));
+            }
+            if ($ok) {
+                return implode(' ', array_slice($words, $i, $k));
+            }
+        }
+        return null;
+    }
+
     /** Minuscules sans accents ni ponctuation, pour comparer (les positions ne sont pas conservees). */
     public static function norm(string $s): string
     {
         $s = mb_strtolower($s);
         $s = strtr($s, ['à' => 'a', 'â' => 'a', 'ä' => 'a', 'ç' => 'c', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e', 'î' => 'i', 'ï' => 'i', 'ô' => 'o', 'ö' => 'o', 'ù' => 'u', 'û' => 'u', 'ü' => 'u', 'ÿ' => 'y', 'œ' => 'oe', 'æ' => 'ae', '’' => ' ', "'" => ' ']);
-        $s = preg_replace('/[^a-z0-9:\- ]+/u', ' ', $s);
+        // Le trait d'union compte comme un espace : « Villa-Marceau » vaut « Villa Marceau ».
+        $s = preg_replace('/[^a-z0-9: ]+/u', ' ', $s);
         return trim(preg_replace('/\s+/', ' ', $s));
     }
 

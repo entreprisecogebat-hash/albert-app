@@ -60,6 +60,24 @@ final class CommandParserTest extends TestCase
         self::assertSame('s-marceau', $r['fields']['siteId']);
     }
 
+    /** Transcriptions reelles de faster-whisper : nom ecorche, trait d'union. */
+    #[DataProvider('heard')]
+    public function testChantierMalTranscrit(string $text): void
+    {
+        $r = $this->parse($text, 's-voltaire');
+        self::assertSame('task', $r['action']);
+        self::assertSame('s-marceau', $r['fields']['siteId']);
+        self::assertSame('Commander les plinthes', $r['fields']['title']);
+        self::assertSame('u-sophie', $r['fields']['assigneeId']);
+    }
+
+    /** @return iterable<array{string}> */
+    public static function heard(): iterable
+    {
+        yield ['Rappel à Sophie de commander les plinthes pour vendredi sur Villa Marseau'];
+        yield ['Rappel à Sophie de commander les plinthes pour vendredi sur Villa-Marceau'];
+    }
+
     public function testTacheSurUnChantierNomme(): void
     {
         $r = $this->parse('Il faut vérifier les attentes électriques sur Bureaux Voltaire demain');

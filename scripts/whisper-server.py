@@ -10,14 +10,17 @@ Installation (une fois) :
 Lancement :
     %LOCALAPPDATA%\\albert\\whisper\\venv\\Scripts\\python scripts\\whisper-server.py
 Le modèle (WHISPER_MODEL, « small » par défaut, ~500 Mo) est téléchargé au premier lancement.
+ffmpeg doit être dans le PATH (décodage des m4a envoyés par l'app).
 """
 
 import cgi
 import json
 import os
+import subprocess
 import tempfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import numpy as np
 from faster_whisper import WhisperModel
 
 MODEL = os.environ.get("WHISPER_MODEL", "small")
@@ -27,6 +30,18 @@ print(f"Chargement du modèle {MODEL}…", flush=True)
 model = WhisperModel(MODEL, device="cpu", compute_type="int8")
 # Oriente la transcription vers le vocabulaire du chantier.
 PROMPT = "Chantier, tâche, rendez-vous, réserve, SAV, plinthes, menuiseries, devis, facture, réunion de chantier."
+
+
+def decode(path):
+    """
+    Audio en 16 kHz mono, décodé par ffmpeg : le décodeur intégré (PyAV) change d'API
+    d'une version à l'autre et casse faster-whisper.
+    """
+    out = subprocess.run(
+        ["ffmpeg", "-nostdin", "-loglevel", "error", "-i", path, "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
+        capture_output=True, check=True,
+    ).stdout
+    return np.frombuffer(out, np.int16).astype(np.float32) / 32768.0
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -45,7 +60,7 @@ class Handler(BaseHTTPRequestHandler):
             tmp.write(form["file"].file.read())
             path = tmp.name
         try:
-            segments, info = model.transcribe(path, language=language, vad_filter=True, initial_prompt=PROMPT)
+            segments, info = model.transcribe(decode(path), language=language, vad_filter=True, initial_prompt=PROMPT)
             text = " ".join(s.text.strip() for s in segments).strip()
             self._json(200, {"text": text, "language": info.language, "duration": info.duration})
         except Exception as e:  # fichier illisible, format inconnu
