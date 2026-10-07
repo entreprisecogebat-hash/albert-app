@@ -1,37 +1,54 @@
-import { fmt, type FeedItem, type OutboxEntry, type SiteCard as SiteCardT } from '@albert/shared';
+import { fmt, phaseLabel, type FeedItem, type OutboxEntry, type SiteCard as SiteCardT } from '@albert/shared';
 import { Image } from 'expo-image';
 import { Archive, Calendar, CalendarClock, Camera, CheckSquare, FileText, Flag, LogIn, LogOut, MessageSquare, PenLine, PencilLine, Settings2, Share2, UserPlus, Clock, Wrench, HandCoins, ReceiptEuro, BanknoteArrowDown } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { DocumentPayload, MessagePayload, PhotoPayload } from '../lib/outbox';
 import { ClientTag, Dot, NightTag, s as cs } from './components';
+import { Cover, Pill, Progress } from './kit';
 import { colors, font, radius, space, t } from './theme';
 
-/* ---------- Carte chantier : nom, adresse, dernière activité datée, nouveautés. Rien d'autre. ---------- */
+/* ---------- Carte chantier : la photo, l'état en un coup d'oeil, ce qui demande une action. ---------- */
 
 export function SiteCard({ site, onPress }: { site: SiteCardT; onPress: () => void }) {
-  const marker = !site.lastActivity ? colors.rule2 : site.lastActivity.marker === 'client' ? colors.client : colors.sync;
+  const phaseTone = site.phase === 'pendant' ? 'accent' : site.phase === 'apres' ? 'sync' : 'neutral';
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={`Chantier ${site.name}`} onPress={onPress}
-      style={({ pressed }) => [st.site, pressed && { backgroundColor: colors.bg }]}>
-      <View style={st.row1}>
-        <View style={{ flex: 1 }}>
-          <Text style={t.cardTitle}>{site.name}</Text>
-          <Text style={[t.mention, { marginTop: 2 }]}>{site.address}</Text>
+      style={({ pressed }) => [st.site, pressed && { transform: [{ scale: 0.99 }], backgroundColor: colors.bg }]}>
+      <View style={{ flexDirection: 'row', gap: space.s3 }}>
+        <Cover uri={site.cover} name={site.name} size={72} />
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.s2 }}>
+            <Text style={[t.cardTitle, { flex: 1 }]} numberOfLines={2}>{site.name}</Text>
+            {site.newCount > 0 ? (
+              <View style={st.newDot} accessibilityLabel={fmt.plural(site.newCount, 'nouveauté')}>
+                <Text style={st.newDotText}>{site.newCount}</Text>
+              </View>
+            ) : null}
+          </View>
+          <Text style={[t.small, { marginTop: 2 }]} numberOfLines={1}>{site.address}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: space.s2 }}>
+            <Pill small tone={phaseTone} label={site.status === 'archived' ? 'Archivé' : phaseLabel[site.phase]} />
+            {site.alerts > 0 ? <Pill small tone="alerte" label={`${site.alerts} en retard`} /> : null}
+            {site.awaitingReply ? <Pill small tone="client" label="Client en attente" /> : null}
+          </View>
         </View>
-        {site.newCount > 0 ? <NightTag label={fmt.plural(site.newCount, 'nouveauté')} /> : null}
       </View>
-      {site.awaitingReply ? (
-        <View style={{ flexDirection: 'row', gap: space.s2, marginTop: space.s3, alignItems: 'center' }}>
-          <Dot color={colors.client} />
-          <Text style={[t.secondary, { flex: 1 }]}>Le client attend une réponse</Text>
+      {site.progress ? (
+        <View style={{ marginTop: space.s4 }}>
+          <Progress value={site.progress.value} label={site.progress.label} />
         </View>
       ) : null}
-      {site.lastActivity ? (
-        <View style={st.last}>
-          <Dot color={marker} style={{ marginTop: 7 }} />
-          <Text style={[t.secondary, { flex: 1 }]}>
-            {site.lastActivity.text} {fmt.relative(site.lastActivity.at).toLowerCase()}
-          </Text>
+      {site.nextAppointment || site.lastActivity ? (
+        <View style={st.foot}>
+          {site.nextAppointment ? (
+            <Text style={[t.small, { color: colors.ink2 }]} numberOfLines={1}>
+              <Text style={{ fontFamily: font.sans600 }}>Prochain RDV · </Text>{site.nextAppointment.title}, {fmt.relative(site.nextAppointment.startsAt).toLowerCase()}
+            </Text>
+          ) : site.lastActivity ? (
+            <Text style={[t.small, { color: colors.ink2 }]} numberOfLines={1}>
+              {site.lastActivity.text} {fmt.relative(site.lastActivity.at).toLowerCase()}
+            </Text>
+          ) : null}
         </View>
       ) : null}
     </Pressable>
@@ -170,7 +187,10 @@ export function PendingRow({ entry, last }: { entry: OutboxEntry; last?: boolean
 }
 
 const st = StyleSheet.create({
-  site: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule2, borderRadius: radius.r2, padding: space.s4, minHeight: 96 },
+  site: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.r3, padding: space.s3, paddingBottom: space.s4 },
+  foot: { marginTop: space.s3, paddingTop: space.s3, borderTopWidth: 1, borderTopColor: colors.rule },
+  newDot: { minWidth: 24, height: 24, borderRadius: 12, backgroundColor: colors.night, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
+  newDotText: { fontFamily: font.sans600, fontSize: 12, color: colors.nightInk },
   row1: { flexDirection: 'row', alignItems: 'flex-start', gap: space.s3 },
   last: { flexDirection: 'row', gap: space.s2, marginTop: space.s3, alignItems: 'flex-start' },
   item: { flexDirection: 'row', gap: space.s4, paddingVertical: space.s4, minHeight: 56 },

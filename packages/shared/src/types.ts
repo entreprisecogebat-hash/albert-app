@@ -73,6 +73,13 @@ export interface SiteCard extends Site {
     at: Iso;
     marker: 'client' | 'sync';
   } | null;
+  /** Avancement 0..1 : part facturée du devis accepté (responsable), sinon tâches faites. Null si rien à mesurer. */
+  progress: { value: number; label: string } | null;
+  /** Points en retard (tâches, réserves) : pastille d'alerte sur la carte. Toujours 0 pour le client. */
+  alerts: number;
+  /** Miniature de la dernière photo visible, pour illustrer la carte */
+  cover: string | null;
+  nextAppointment: { title: string; startsAt: Iso } | null;
 }
 
 export interface Folder {

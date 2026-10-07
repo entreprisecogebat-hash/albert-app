@@ -33,6 +33,12 @@ export const colors = {
   client: '#00C7D3',
   sync: '#34C855',
   alerte: '#C8442E',
+  // Fonds teintés des statuts (pastilles, tuiles d'icône) : toujours accompagnés d'un mot
+  accentSoft: '#FFF4CC',
+  alerteSoft: '#F8E6E2',
+  clientSoft: '#DDF6F8',
+  syncSoft: '#E1F5E6',
+  nightSoft: '#E9EBEE',
   bezel: '#15181C',
 } as const;
 

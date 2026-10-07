@@ -70,6 +70,7 @@ function Navigator() {
       </Stack.Protected>
       <Stack.Protected guard={!!me}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="ajouter" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="chantiers/nouveau" options={{ presentation: 'modal' }} />
         <Stack.Screen name="chantiers/[id]/index" />
         <Stack.Screen name="chantiers/[id]/ajouter" />

@@ -285,10 +285,10 @@ export const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
   appbar: {
     flexDirection: 'row', alignItems: 'center', gap: space.s2, paddingHorizontal: space.s4, paddingTop: space.s2, paddingBottom: space.s3,
-    borderBottomWidth: 1, borderBottomColor: colors.rule2, backgroundColor: colors.paper,
+    borderBottomWidth: 1, borderBottomColor: colors.rule, backgroundColor: colors.paper,
   },
   back: { width: target.min, height: target.min, marginLeft: -10, alignItems: 'center', justifyContent: 'center' },
-  view: { flex: 1, backgroundColor: colors.bg2 },
+  view: { flex: 1, backgroundColor: colors.bg },
   content: { padding: space.s4, gap: space.s4 },
   actionbar: {
     position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: space.s4, paddingTop: space.s3,
@@ -302,7 +302,7 @@ export const s = StyleSheet.create({
   textBtn: { minHeight: target.secondary, alignItems: 'center', justifyContent: 'center' },
   field: {
     flexDirection: 'row', alignItems: 'center', gap: space.s3, minHeight: target.primary, paddingHorizontal: space.s4,
-    backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule2, borderRadius: radius.r1,
+    backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule2, borderRadius: radius.r2,
   },
   // Sur le web, le cadre du champ porte déjà le focus : pas de second contour
   input: { flex: 1, fontFamily: font.sans400, fontSize: 17, color: colors.ink, minHeight: target.primary - 2, paddingVertical: 0, ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },
@@ -326,7 +326,7 @@ export const s = StyleSheet.create({
     paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'flex-start',
   },
   state: { borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'flex-start', marginTop: space.s2 },
-  card: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule2, borderRadius: radius.r2, padding: space.s4 },
+  card: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.r3, padding: space.s4 },
   kv: { minHeight: 60, paddingVertical: space.s3, paddingHorizontal: space.s4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.s4 },
   kvRule: { borderBottomWidth: 1, borderBottomColor: colors.rule },
   seg: { flex: 1, minHeight: 68, padding: space.s3, paddingHorizontal: space.s4, borderRadius: radius.r1, borderWidth: 1, borderColor: colors.rule2, backgroundColor: colors.paper },

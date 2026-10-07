@@ -24,6 +24,7 @@ use App\Repository\SiteMemberRepository;
 use App\Repository\SiteRepository;
 use App\Service\FinanceService;
 use App\Service\SiteAccess;
+use App\Service\SiteCardStats;
 use App\Service\SiteFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,10 +46,11 @@ final class SiteController extends AbstractController
 
     /** "Mes chantiers" (F-01) */
     #[Route('', methods: ['GET'])]
-    public function list(#[CurrentUser] User $user, Request $request, SiteRepository $sites): JsonResponse
+    public function list(#[CurrentUser] User $user, Request $request, SiteRepository $sites, SiteCardStats $cardStats): JsonResponse
     {
         $memberships = $sites->findForMember($user, $request->query->get('q'), $request->query->getBoolean('archived'));
         $channels = $this->clientChannelsBySite();
+        $stats = $cardStats->forMemberships($memberships);
         $out = [];
         foreach ($memberships as $m) {
             $site = $m->getSite();
@@ -59,7 +61,7 @@ final class SiteController extends AbstractController
                 $this->events->latest($site, $clientOnly, FinanceService::hiddenFeedTypes($m)),
                 $this->events->countSince($site, $since, $clientOnly, (string) $user->getId(), FinanceService::hiddenFeedTypes($m)),
                 !$clientOnly && ($channels[(string) $site->getId()] ?? false),
-            );
+            ) + ($stats[(string) $site->getId()] ?? ['progress' => null, 'alerts' => 0, 'cover' => null, 'nextAppointment' => null]);
         }
         return $this->json(['items' => $out]);
     }
