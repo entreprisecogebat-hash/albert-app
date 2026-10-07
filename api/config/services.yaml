@@ -12,6 +12,7 @@ services:
             string $appSecret: '%kernel.secret%'
             string $smsTransport: '%env(SMS_TRANSPORT)%'
             string $expoPushUrl: '%env(EXPO_PUSH_URL)%'
+            string $whisperUrl: '%env(WHISPER_URL)%'
             string $appEnv: '%kernel.environment%'
 
     App\:

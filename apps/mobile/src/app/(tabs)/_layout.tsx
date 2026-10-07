@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../lib/auth';
+import { useHoldToRecord } from '../../lib/voice';
 import { colors, font } from '../../ui/theme';
 
 /**
@@ -62,11 +63,12 @@ export default function TabsLayout() {
 }
 
 /**
- * Bouton central. Appui court : le menu « Ajouter ». Appui long : il passe en nuit, une onde
- * jaune bat dedans et des cercles s'en échappent (façon Shazam) tant que le doigt reste posé.
+ * Bouton central. Appui court : le menu « Ajouter ». Appui long : commande vocale. Il passe en nuit,
+ * une onde jaune bat dedans et des cercles s'en échappent (façon Shazam) tant que le doigt reste posé.
  */
 function AddButton() {
   const [holding, setHolding] = useState(false);
+  const voice = useHoldToRecord();
   // Hauteurs de départ des barres de l'onde, et deux cercles décalés d'une demi-période.
   const [bars] = useState(() => [0.45, 0.8, 1, 0.65, 0.4].map((v) => new Animated.Value(v)));
   const [rings] = useState(() => [new Animated.Value(0), new Animated.Value(0)]);
@@ -99,9 +101,18 @@ function AddButton() {
   return (
     <Pressable accessibilityRole="button" accessibilityLabel="Ajouter : photo, pointage, tâche, message. Appui long : note vocale"
       onPress={() => router.push('/ajouter')}
-      onLongPress={() => setHolding(true)}
+      onLongPress={() => {
+        setHolding(true);
+        voice.start();
+      }}
       delayLongPress={300}
-      onPressOut={() => setHolding(false)}
+      onPressOut={async () => {
+        if (!holding) return;
+        setHolding(false);
+        // Au relâchement, Albert écoute la commande et propose l'action.
+        const rec = await voice.stop();
+        if (rec) router.push({ pathname: '/commande', params: { uri: rec.uri, ms: String(rec.durationMs), mime: rec.mimeType, name: rec.filename } });
+      }}
       style={({ pressed }) => [{ flex: 1, alignItems: 'center', justifyContent: 'center' }, pressed && !holding && { transform: [{ scale: 0.94 }] }]}>
       <Animated.View style={{ width: 66, height: 66, marginTop: -36, alignItems: 'center', justifyContent: 'center', transform: [{ scale: grow }] }}>
         {holding ? rings.map((r, i) => (

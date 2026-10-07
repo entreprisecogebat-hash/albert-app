@@ -3,7 +3,7 @@
  *
  *  - Le téléphone garde chaque action dans une file persistée.
  *  - Au retour du réseau, la file part seule, dans l'ordre.
- *  - La V1 ne synchronise que des ajouts (photos, documents, messages) : pas de conflit possible.
+ *  - La V1 ne synchronise que des ajouts (photos, documents, messages, vocaux) : pas de conflit possible.
  *  - Chaque action porte un clientId ; le serveur reconnaît un rejeu et ne crée pas de doublon.
  *
  * Indépendant de la plateforme : le stockage et l'envoi sont injectés.
@@ -11,7 +11,7 @@
 
 import { ApiError } from './api';
 
-export type OutboxKind = 'photo' | 'document' | 'message';
+export type OutboxKind = 'photo' | 'document' | 'message' | 'voice';
 
 export interface OutboxEntry<P = unknown> {
   /** Identique au clientId envoyé au serveur */

@@ -242,6 +242,11 @@ final class Presenter
             'author' => $this->actor($m->getAuthor()),
             'mine' => $viewer && $m->getAuthor() && (string) $m->getAuthor()->getId() === (string) $viewer->getId(),
             'clientId' => $m->getClientId()?->toRfc4122(),
+            'audio' => $m->getAudioKey() ? [
+                'url' => $this->signer->sign($m->getAudioKey()),
+                'mimeType' => $m->getAudioMime(),
+                'durationMs' => $m->getAudioDurationMs(),
+            ] : null,
         ];
     }
 

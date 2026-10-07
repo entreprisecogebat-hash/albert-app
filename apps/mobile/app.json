@@ -27,7 +27,8 @@
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "ACCESS_COARSE_LOCATION",
+        "RECORD_AUDIO"
       ],
       "versionCode": 3
     },
@@ -53,6 +54,13 @@
           "android": {
             "usesCleartextTraffic": true
           }
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Albert utilise le micro pour enregistrer des notes vocales sur le chantier.",
+          "recordAudioAndroid": true
         }
       ]
     ],

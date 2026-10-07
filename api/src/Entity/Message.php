@@ -40,6 +40,16 @@ class Message implements TenantOwned
     #[ORM\Column(type: 'uuid', unique: true, nullable: true)]
     private ?Uuid $clientId;
 
+    /** Note vocale jointe au message (le corps porte alors un libelle lisible partout). */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $audioKey = null;
+
+    #[ORM\Column(length: 60, nullable: true)]
+    private ?string $audioMime = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $audioDurationMs = null;
+
     public function __construct(Channel $channel, ?User $author, string $body, ?Uuid $clientId, ?\DateTimeImmutable $writtenAt = null)
     {
         $this->id = Uuid::v7();
@@ -61,4 +71,14 @@ class Message implements TenantOwned
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getReceivedAt(): \DateTimeImmutable { return $this->receivedAt; }
     public function getClientId(): ?Uuid { return $this->clientId; }
+    public function getAudioKey(): ?string { return $this->audioKey; }
+    public function getAudioMime(): ?string { return $this->audioMime; }
+    public function getAudioDurationMs(): ?int { return $this->audioDurationMs; }
+
+    public function attachAudio(string $key, string $mime, int $durationMs): void
+    {
+        $this->audioKey = $key;
+        $this->audioMime = $mime;
+        $this->audioDurationMs = $durationMs;
+    }
 }

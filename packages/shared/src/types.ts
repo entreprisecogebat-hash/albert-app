@@ -528,6 +528,15 @@ export interface Message {
   author: Actor | null;
   mine: boolean;
   clientId: string | null;
+  /** Note vocale jointe : le corps vaut alors « Note vocale (0:12) ». */
+  audio: MessageAudio | null;
+}
+
+export interface MessageAudio {
+  /** URL signée, à durée limitée */
+  url: string;
+  mimeType: string | null;
+  durationMs: number | null;
 }
 
 export type FeedItemType =
@@ -843,4 +852,37 @@ export interface FinanceSummary {
 export interface FinanceList {
   items: FinanceEntry[];
   summary: FinanceSummary;
+}
+
+/* ---------- Commandes vocales (appui long sur +) ---------- */
+
+export type AssistantAction = 'site' | 'task' | 'appointment' | 'message' | 'reserve' | 'unknown';
+
+/**
+ * Ce qu'Albert a compris d'une commande dictée. Rien n'est encore créé :
+ * l'utilisateur valide ou corrige, puis l'app appelle la route habituelle.
+ */
+export interface AssistantProposal {
+  action: AssistantAction;
+  /** Ce qu'Albert a entendu */
+  transcript: string;
+  /** « Créer le chantier « Zazoun » », ou l'aide si la phrase n'est pas comprise */
+  summary: string;
+  fields: {
+    siteId?: string | null;
+    siteName?: string | null;
+    name?: string | null;
+    clientName?: string | null;
+    address?: string | null;
+    title?: string;
+    body?: string;
+    dueOn?: string | null;
+    startsAt?: Iso | null;
+    endsAt?: Iso | null;
+    assigneeId?: string | null;
+    assigneeName?: string | null;
+    kind?: ReserveKind;
+  };
+  /** Champs à compléter avant de pouvoir valider (« address », « siteId », « time »…) */
+  missing: string[];
 }

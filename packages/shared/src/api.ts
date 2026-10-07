@@ -6,6 +6,7 @@ import type {
   ApiErrorBody,
   Appointment,
   AppointmentInput,
+  AssistantProposal,
   Channel,
   ChannelSummary,
   ClockInput,
@@ -207,6 +208,8 @@ export function createApiClient(opts: ApiClientOptions) {
         get<{ channel: Channel; items: Message[] }>(`/api/channels/${channelId}/messages`, query),
       send: (channelId: string, body: string, clientId: string, createdAt?: string) =>
         post<Message>(`/api/channels/${channelId}/messages`, { body, clientId, createdAt }),
+      /** Note vocale (multipart : file, durationMs, clientId, createdAt), rangée dans la conversation de l'équipe. */
+      voice: (siteId: string, form: FormData) => request<Message>('POST', `/api/sites/${siteId}/voice-notes`, form),
     },
 
     /** F-18 : tableau de priorités du jour, calculé par règles (IA activable par entreprise). */
@@ -239,6 +242,12 @@ export function createApiClient(opts: ApiClientOptions) {
       create: (data: AppointmentInput) => post<Appointment>('/api/appointments', data),
       update: (id: string, data: Partial<AppointmentInput>) => patch<Appointment>(`/api/appointments/${id}`, data),
       remove: (id: string) => del<{ ok: true }>(`/api/appointments/${id}`),
+    },
+
+    assistant: {
+      /** Commande dictée (multipart : file) ou écrite ({ text }), avec le chantier affiché s'il y en a un. */
+      command: (input: FormData | { text: string; siteId?: string | null }) =>
+        input instanceof FormData ? request<AssistantProposal>('POST', '/api/assistant/command', input) : post<AssistantProposal>('/api/assistant/command', input),
     },
 
     clock: {
